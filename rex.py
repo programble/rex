@@ -23,6 +23,14 @@
 __version__ = "0.1.0"
 
 from optparse import OptionParser
+import sys
+import re
+
+quiet = False
+
+def qprint(data):
+    if not quiet:
+        print data
 
 def version_info():
     # GNU Coding guidelines suggests:
@@ -37,9 +45,62 @@ def version_info():
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
 
+def match(expr, file, ignorecase=False):
+    data = file.read()
+    file.close()
+    
+    regexpr = None
+    if ignorecase:
+        try:
+            regexpr = re.compile(expr, re.IGNORECASE)
+        except:
+            qprint("Invalid expression")
+            return 4
+    else:
+        try:
+            regexpr = re.compile(expr)
+        except:
+            qprint("Invalid expression")
+            return 4
+    
+    if not regexpr:
+        assert(false)
+    
+    m = regexpr.match(data)
+    if not m:
+        qprint("No match")
+        return 1
+    else:
+        qprint(m.group())
+        return 0
+
 def main():
-	
+	# Parse command line options
+    parser = OptionParser(usage="%prog TODO")
+    parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
+    parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
+    parser.add_option("--match", "-m", dest="match", action="store", default=None, help="Match the expression with the input")
+    parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
+    (options, args) = parser.parse_args()
+    
+    if options.version:
+        version_info()
+        return 0
+    
+    quiet = option.quiet
+    
+    file = sys.stdin
+    if len(args) > 0:
+        try:
+            file = open(args[0], 'r')
+        except IOError:
+            qprint("Cannot open input file")
+            return 8
+    
+    if options.match != None:
+        return match(options.match, file, options.ignorecase)
+    
 	return 0
 
 if __name__ == '__main__':
-	main()
+	sys.exit(main())
