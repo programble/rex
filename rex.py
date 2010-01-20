@@ -71,7 +71,8 @@ def match(expr, file, groups=[0], ignorecase=False):
         qprint("No match")
         return 1
     else:
-        qprint(m.group(*groups))
+        for gn in groups:
+            qprint(m.group(gn))
         return 0
 
 def search(expr, file, groups=[0], ignorecase=False):
@@ -100,7 +101,8 @@ def search(expr, file, groups=[0], ignorecase=False):
         qprint("No match")
         return 1
     else:
-        qprint(m.group(*groups))
+        for gn in groups:
+            qprint(m.group(gn))
         return 0
 
 def main():
@@ -109,8 +111,8 @@ def main():
     parser = OptionParser(usage="%prog TODO")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
     parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
-    parser.add_option("--match", "-m", dest="match", action="store", default=None, help="Match the expression with the input")
-    parser.add_option("--search", "-s", dest="search", action="store", default=None, help="Search for the expression in the input")
+    parser.add_option("--match", "-m", dest="match", action="store", default=None, help="Match expression with input")
+    parser.add_option("--search", "-s", dest="search", action="store", default=None, help="Search for expression match in input")
     parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", default=None, help="Find all matches of expression in input")
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
@@ -137,6 +139,8 @@ def main():
         return match(options.match, file, options.groups, options.ignorecase)
     elif options.search:
         return search(options.search, file, options.groups, options.ignorecase)
+    elif options.matchall:
+        return matchall(options.matchall, file, options.groups, options.ignorecase)
     
 	return 0
 
