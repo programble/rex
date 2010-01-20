@@ -45,23 +45,23 @@ def version_info():
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
 
-def match(expr, file, groups=[0], ignorecase=False):
+def match(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=False):
     data = file.read()
     file.close()
     
     regexpr = None
+    flags = []
     if ignorecase:
-        try:
-            regexpr = re.compile(expr, re.IGNORECASE)
-        except:
-            qprint("Invalid expression")
-            return 4
-    else:
-        try:
-            regexpr = re.compile(expr)
-        except:
-            qprint("Invalid expression")
-            return 4
+        flags.append(re.IGNORECASE)
+    if multiline:
+        flags.append(re.MULTILINE)
+    if dotall:
+        flags.append(re.DOTALL)
+    try:
+        regexpr = re.compile(expr, *flags)
+    except:
+        qprint("Invalid expression")
+        return 4
     
     if not regexpr:
         assert(false)
@@ -75,23 +75,23 @@ def match(expr, file, groups=[0], ignorecase=False):
             qprint(m.group(gn))
         return 0
 
-def search(expr, file, groups=[0], ignorecase=False):
+def search(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=False):
     data = file.read()
     file.close()
     
     regexpr = None
+    flags = []
     if ignorecase:
-        try:
-            regexpr = re.compile(expr, re.IGNORECASE)
-        except:
-            qprint("Invalid expression")
-            return 4
-    else:
-        try:
-            regexpr = re.compile(expr)
-        except:
-            qprint("Invalid expression")
-            return 4
+        flags.append(re.IGNORECASE)
+    if multiline:
+        flags.append(re.MULTILINE)
+    if dotall:
+        flags.append(re.DOTALL)
+    try:
+        regexpr = re.compile(expr, *flags)
+    except:
+        qprint("Invalid expression")
+        return 4
     
     if not regexpr:
         assert(false)
@@ -105,23 +105,23 @@ def search(expr, file, groups=[0], ignorecase=False):
             qprint(m.group(gn))
         return 0
 
-def matchall(expr, file, groups=[0], ignorecase=False):
+def matchall(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=False):
     data = file.read()
     file.close()
     
     regexpr = None
+    flags = []
     if ignorecase:
-        try:
-            regexpr = re.compile(expr, re.IGNORECASE)
-        except:
-            qprint("Invalid expression")
-            return 4
-    else:
-        try:
-            regexpr = re.compile(expr)
-        except:
-            qprint("Invalid expression")
-            return 4
+        flags.append(re.IGNORECASE)
+    if multiline:
+        flags.append(re.MULTILINE)
+    if dotall:
+        flags.append(re.DOTALL)
+    try:
+        regexpr = re.compile(expr, *flags)
+    except:
+        qprint("Invalid expression")
+        return 4
     
     if not regexpr:
         assert(false)
@@ -143,11 +143,13 @@ def main():
     parser = OptionParser(usage="%prog TODO")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
     parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
-    parser.add_option("--match", "-m", dest="match", action="store", default=None, help="Match expression with input")
-    parser.add_option("--search", "-s", dest="search", action="store", default=None, help="Search for expression match in input")
-    parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", default=None, help="Find all matches of expression in input")
-    parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", help="Print a group")
+    parser.add_option("--match", "-m", dest="match", action="store", default=None, metavar="EXPR", help="Match expression with input")
+    parser.add_option("--search", "-s", dest="search", action="store", default=None, metavar="EXPR", help="Search for expression match in input")
+    parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", metavar="EXPR", default=None, help="Find all matches of expression in input")
+    parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
+    parser.add_option("--multiline", "-l", dest="multiline", action="store_true", default=False, help="Treat input as multiline")
+    parser.add_option("--dotall", dest="dotall", action="store_true", default=False, help="Make . match all, including newlines")
     (options, args) = parser.parse_args()
     
     if options.version:
@@ -168,11 +170,11 @@ def main():
             return 8
     
     if options.match:
-        return match(options.match, file, options.groups, options.ignorecase)
+        return match(options.match, file, options.groups, options.ignorecase, options.multiline, options.dotall)
     elif options.search:
-        return search(options.search, file, options.groups, options.ignorecase)
+        return search(options.search, file, options.groups, options.ignorecase, options.multiline, options.dotall)
     elif options.matchall:
-        return matchall(options.matchall, file, options.groups, options.ignorecase)
+        return matchall(options.matchall, file, options.groups, options.ignorecase, options.multiline, options.dotall)
     
 	return 0
 
