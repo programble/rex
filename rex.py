@@ -105,6 +105,38 @@ def search(expr, file, groups=[0], ignorecase=False):
             qprint(m.group(gn))
         return 0
 
+def matchall(expr, file, groups=[0], ignorecase=False):
+    data = file.read()
+    file.close()
+    
+    regexpr = None
+    if ignorecase:
+        try:
+            regexpr = re.compile(expr, re.IGNORECASE)
+        except:
+            qprint("Invalid expression")
+            return 4
+    else:
+        try:
+            regexpr = re.compile(expr)
+        except:
+            qprint("Invalid expression")
+            return 4
+    
+    if not regexpr:
+        assert(false)
+    
+    miter = regexpr.finditer(data)
+    count = 0
+    for m in miter:
+        for gn in groups:
+            qprint(m.group(gn))
+        count += 1
+    if count == 0:
+        qprint("No matches")
+        return 1
+    return 0
+
 def main():
     global quiet
 	# Parse command line options
