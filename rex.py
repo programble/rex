@@ -45,7 +45,7 @@ def version_info():
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
 
-def match(expr, file, ignorecase=False):
+def match(expr, file, groups=[0], ignorecase=False):
     data = file.read()
     file.close()
     
@@ -71,15 +71,48 @@ def match(expr, file, ignorecase=False):
         qprint("No match")
         return 1
     else:
-        qprint(m.group())
+        qprint(m.group(*groups))
+        return 0
+
+def search(expr, file, groups=[0], ignorecase=False):
+    data = file.read()
+    file.close()
+    
+    regexpr = None
+    if ignorecase:
+        try:
+            regexpr = re.compile(expr, re.IGNORECASE)
+        except:
+            qprint("Invalid expression")
+            return 4
+    else:
+        try:
+            regexpr = re.compile(expr)
+        except:
+            qprint("Invalid expression")
+            return 4
+    
+    if not regexpr:
+        assert(false)
+    
+    m = regexpr.search(data)
+    if not m:
+        qprint("No match")
+        return 1
+    else:
+        qprint(m.group(*groups))
         return 0
 
 def main():
+    global quiet
 	# Parse command line options
     parser = OptionParser(usage="%prog TODO")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
     parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
     parser.add_option("--match", "-m", dest="match", action="store", default=None, help="Match the expression with the input")
+    parser.add_option("--search", "-s", dest="search", action="store", default=None, help="Search for the expression in the input")
+    parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", default=None, help="Find all matches of expression in input")
+    parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
     (options, args) = parser.parse_args()
     
@@ -87,7 +120,10 @@ def main():
         version_info()
         return 0
     
-    quiet = option.quiet
+    quiet = options.quiet
+    
+    if options.groups == []:
+        options.groups = [0]
     
     file = sys.stdin
     if len(args) > 0:
@@ -97,8 +133,10 @@ def main():
             qprint("Cannot open input file")
             return 8
     
-    if options.match != None:
-        return match(options.match, file, options.ignorecase)
+    if options.match:
+        return match(options.match, file, options.groups, options.ignorecase)
+    elif options.search:
+        return search(options.search, file, options.groups, options.ignorecase)
     
 	return 0
 
