@@ -141,16 +141,46 @@ def matchall(expr, file, count=False, groups=[0], ignorecase=False, multiline=Fa
         return 1
     return 0
 
+def split(expr, file, count, ignorecase=False, multiline=False, dotall=False):
+    data = file.read()
+    file.close()
+    
+    regexpr = None
+    flags = 0
+    if ignorecase:
+        flags = flags | re.IGNORECASE
+    if multiline:
+        flags = flags | re.MULTILINE
+    if dotall:
+        flags = flags | re.DOTALL
+    try:
+        regexpr = re.compile(expr, flags)
+    except:
+        qprint("Invalid expression")
+        return 4
+    
+    if not regexpr:
+        assert(false)
+    
+    splits = regexpr.split(data)
+    if count:
+        qprint(len(splits))
+        return 0
+    for segment in splits:
+        qprint(segment)
+    return 0
+
 def main():
     global quiet
 	# Parse command line options
-    parser = OptionParser(usage="%prog TODO")
+    parser = OptionParser(usage="%prog [options] <function> <expression> [file]")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
     parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
     parser.add_option("--match", "-m", dest="match", action="store", default=None, metavar="EXPR", help="Match expression with input")
     parser.add_option("--search", "-s", dest="search", action="store", default=None, metavar="EXPR", help="Search for expression match in input")
     parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", metavar="EXPR", default=None, help="Find all matches of expression in input")
-    parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all, print number of matches instead of matches")
+    parser.add_option("--split", "-t", dest="split", action="store", metavar="EXPR", default=None, help="Split input at each match")
+    parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all or --split, print number of matches/splits instead of matches/splits")
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
     parser.add_option("--multiline", "-l", dest="multiline", action="store_true", default=False, help="Treat input as multiline")
@@ -180,6 +210,11 @@ def main():
         return search(options.search, file, options.groups, options.ignorecase, options.multiline, options.dotall)
     elif options.matchall:
         return matchall(options.matchall, file, options.count, options.groups, options.ignorecase, options.multiline, options.dotall)
+    elif options.split:
+        return split(options.split, file, options.count, options.ignorecase, options.multiline, options.dotall)
+    else:
+        qprint("Nothing to do")
+        return 16
     
 	return 0
 
