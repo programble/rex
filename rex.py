@@ -26,6 +26,7 @@ from optparse import OptionParser
 import sys
 import re
 
+# I'm sorry, there was no other way.
 quiet = False
 
 def qprint(data):
