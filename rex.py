@@ -141,7 +141,7 @@ def matchall(expr, file, count=False, groups=[0], ignorecase=False, multiline=Fa
         return 1
     return 0
 
-def split(expr, file, count, ignorecase=False, multiline=False, dotall=False):
+def split(expr, file, maxsplit=0, count=False, ignorecase=False, multiline=False, dotall=False):
     data = file.read()
     file.close()
     
@@ -162,7 +162,7 @@ def split(expr, file, count, ignorecase=False, multiline=False, dotall=False):
     if not regexpr:
         assert(false)
     
-    splits = regexpr.split(data)
+    splits = regexpr.split(data, maxsplit)
     if count:
         qprint(len(splits))
         return 0
@@ -180,6 +180,7 @@ def main():
     parser.add_option("--search", "-s", dest="search", action="store", default=None, metavar="EXPR", help="Search for expression match in input")
     parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", metavar="EXPR", default=None, help="Find all matches of expression in input")
     parser.add_option("--split", "-t", dest="split", action="store", metavar="EXPR", default=None, help="Split input at each match")
+    parser.add_option("--maxsplit", dest="maxsplit", action="store", type="int", metavar="MAX", default=0, help="Used in comination with --split, sets a maximum amount of splits")
     parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all or --split, print number of matches/splits instead of matches/splits")
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
@@ -211,7 +212,7 @@ def main():
     elif options.matchall:
         return matchall(options.matchall, file, options.count, options.groups, options.ignorecase, options.multiline, options.dotall)
     elif options.split:
-        return split(options.split, file, options.count, options.ignorecase, options.multiline, options.dotall)
+        return split(options.split, file, options.maxsplit, options.count, options.ignorecase, options.multiline, options.dotall)
     else:
         qprint("Nothing to do")
         return 16
