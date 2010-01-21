@@ -50,15 +50,15 @@ def match(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=Fals
     file.close()
     
     regexpr = None
-    flags = []
+    flags = 0
     if ignorecase:
-        flags.append(re.IGNORECASE)
+        flags = flags | re.IGNORECASE
     if multiline:
-        flags.append(re.MULTILINE)
+        flags = flags | re.MULTILINE
     if dotall:
-        flags.append(re.DOTALL)
+        flags = flags | re.DOTALL
     try:
-        regexpr = re.compile(expr, *flags)
+        regexpr = re.compile(expr, flags)
     except:
         qprint("Invalid expression")
         return 4
@@ -80,15 +80,15 @@ def search(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=Fal
     file.close()
     
     regexpr = None
-    flags = []
+    flags = 0
     if ignorecase:
-        flags.append(re.IGNORECASE)
+        flags = flags | re.IGNORECASE
     if multiline:
-        flags.append(re.MULTILINE)
+        flags = flags | re.MULTILINE
     if dotall:
-        flags.append(re.DOTALL)
+        flags = flags | re.DOTALL
     try:
-        regexpr = re.compile(expr, *flags)
+        regexpr = re.compile(expr, flags)
     except:
         qprint("Invalid expression")
         return 4
@@ -105,20 +105,20 @@ def search(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=Fal
             qprint(m.group(gn))
         return 0
 
-def matchall(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=False):
+def matchall(expr, file, count=False, groups=[0], ignorecase=False, multiline=False, dotall=False):
     data = file.read()
     file.close()
     
     regexpr = None
-    flags = []
+    flags = 0
     if ignorecase:
-        flags.append(re.IGNORECASE)
+        flags = flags | re.IGNORECASE
     if multiline:
-        flags.append(re.MULTILINE)
+        flags = flags | re.MULTILINE
     if dotall:
-        flags.append(re.DOTALL)
+        flags = flags | re.DOTALL
     try:
-        regexpr = re.compile(expr, *flags)
+        regexpr = re.compile(expr, flags)
     except:
         qprint("Invalid expression")
         return 4
@@ -127,12 +127,16 @@ def matchall(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=F
         assert(false)
     
     miter = regexpr.finditer(data)
-    count = 0
+    mcount = 0
     for m in miter:
-        for gn in groups:
-            qprint(m.group(gn))
-        count += 1
-    if count == 0:
+        if not count:
+            for gn in groups:
+                qprint(m.group(gn))
+        mcount += 1
+    if count:
+        qprint(mcount)
+        return 0
+    if mcount == 0:
         qprint("No matches")
         return 1
     return 0
@@ -146,6 +150,7 @@ def main():
     parser.add_option("--match", "-m", dest="match", action="store", default=None, metavar="EXPR", help="Match expression with input")
     parser.add_option("--search", "-s", dest="search", action="store", default=None, metavar="EXPR", help="Search for expression match in input")
     parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", metavar="EXPR", default=None, help="Find all matches of expression in input")
+    parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all, print number of matches instead of matches"
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
     parser.add_option("--multiline", "-l", dest="multiline", action="store_true", default=False, help="Treat input as multiline")
@@ -174,7 +179,7 @@ def main():
     elif options.search:
         return search(options.search, file, options.groups, options.ignorecase, options.multiline, options.dotall)
     elif options.matchall:
-        return matchall(options.matchall, file, options.groups, options.ignorecase, options.multiline, options.dotall)
+        return matchall(options.matchall, file, options.count, options.groups, options.ignorecase, options.multiline, options.dotall)
     
 	return 0
 
