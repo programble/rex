@@ -150,7 +150,7 @@ def main():
     parser.add_option("--match", "-m", dest="match", action="store", default=None, metavar="EXPR", help="Match expression with input")
     parser.add_option("--search", "-s", dest="search", action="store", default=None, metavar="EXPR", help="Search for expression match in input")
     parser.add_option("--match-all", "--all", "-a", dest="matchall", action="store", metavar="EXPR", default=None, help="Find all matches of expression in input")
-    parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all, print number of matches instead of matches"
+    parser.add_option("--count", "-c", dest="count", action="store_true", default=False, help="Used in combination with --match-all, print number of matches instead of matches")
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
     parser.add_option("--multiline", "-l", dest="multiline", action="store_true", default=False, help="Treat input as multiline")
