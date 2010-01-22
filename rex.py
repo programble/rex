@@ -30,6 +30,7 @@ import re
 quiet = False
 
 def qprint(data):
+    """Print only if queit is disabled"""
     if not quiet:
         print data
 
@@ -47,11 +48,13 @@ def version_info():
     print "There is NO WARRANTY, to the extent permitted by law."
 
 def match(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=False):
+    # Read in input
     data = file.read()
     file.close()
     
     regexpr = None
     flags = 0
+    # Combine flags provided by args
     if ignorecase:
         flags = flags | re.IGNORECASE
     if multiline:
@@ -64,14 +67,16 @@ def match(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=Fals
         qprint("Invalid expression")
         return 4
     
+    # regexpr should always have a value by now
     if not regexpr:
-        assert(false)
+        assert(False)
     
     m = regexpr.match(data)
     if not m:
         qprint("No match")
         return 1
     else:
+        # Print each group that is wanted
         for gn in groups:
             qprint(m.group(gn))
         return 0
@@ -128,6 +133,7 @@ def matchall(expr, file, count=False, groups=[0], ignorecase=False, multiline=Fa
         assert(false)
     
     miter = regexpr.finditer(data)
+    # Count matches (to determine if there were any)
     mcount = 0
     for m in miter:
         if not count:
@@ -195,9 +201,11 @@ def main():
     
     quiet = options.quiet
     
+    # Set default to print group 0 (whole match)
     if options.groups == []:
         options.groups = [0]
     
+    # If no file specified, read from stdin
     file = sys.stdin
     if len(args) > 0:
         try:
@@ -215,10 +223,11 @@ def main():
     elif options.split:
         return split(options.split, file, options.maxsplit, options.count, options.ignorecase, options.multiline, options.dotall)
     else:
+        # No function supplied
         parser.print_help()
-        return 0
     
 	return 0
 
 if __name__ == '__main__':
+    # Exit with code returned by main() (like C)
 	sys.exit(main())
