@@ -7,11 +7,18 @@ BIN_DIR=$(PREFIX)/bin
 all: 
 	@echo "Run 'make install' as root to install Rex"
 
-install:
+install: info
 	mkdir -p $(INSTALL_DIR)
-	cp -v * $(INSTALL_DIR)
+	cp -fv * $(INSTALL_DIR)
 	chmod +x $(INSTALL_DIR)/rex.py
-	ln -s $(INSTALL_DIR)/rex.py $(BIN_DIR)/rex
+	ln -fs $(INSTALL_DIR)/rex.py $(BIN_DIR)/rex
+
+info:
+	@echo "Installing data to:"
+	@echo "    $(INSTALL_DIR)"
+	@echo "Installing binary to:"
+	@echo "    $(BIN_DIR)"
+	@echo
 
 remove: uninstall
 
