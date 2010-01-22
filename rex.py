@@ -215,8 +215,8 @@ def main():
     elif options.split:
         return split(options.split, file, options.maxsplit, options.count, options.ignorecase, options.multiline, options.dotall)
     else:
-        qprint("Nothing to do")
-        return 16
+        parser.print_help()
+        return 0
     
 	return 0
 
