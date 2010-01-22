@@ -25,12 +25,14 @@ __version__ = "0.1.0"
 from optparse import OptionParser
 import sys
 import re
+import glob
+import os.path
 
 # I'm sorry, there was no other way.
 quiet = False
 
 def qprint(data):
-    """Print only if queit is disabled"""
+    """Print only if quiet is disabled"""
     if not quiet:
         print data
 
@@ -180,7 +182,7 @@ def split(expr, file, maxsplit=0, count=False, ignorecase=False, multiline=False
 def main():
     global quiet
 	# Parse command line options
-    parser = OptionParser(usage="%prog [options] <function> <expression> [file]")
+    parser = OptionParser(usage="%prog [options] <function> <expression> [files...]")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
     parser.add_option("--quiet", "-q", dest="quiet", action="store_true", default=False, help="Suppress output")
     parser.add_option("--match", "-m", dest="match", action="store", default=None, metavar="EXPR", help="Match expression with input")
@@ -205,28 +207,43 @@ def main():
     if options.groups == []:
         options.groups = [0]
     
-    # If no file specified, read from stdin
-    file = sys.stdin
+    # Open all files specified
+    files = []
     if len(args) > 0:
-        try:
-            file = open(args[0], 'r')
-        except IOError:
-            qprint("Cannot open input file")
-            return 8
-    
-    if options.match:
-        return match(options.match, file, options.groups, options.ignorecase, options.multiline, options.dotall)
-    elif options.search:
-        return search(options.search, file, options.groups, options.ignorecase, options.multiline, options.dotall)
-    elif options.matchall:
-        return matchall(options.matchall, file, options.count, options.groups, options.ignorecase, options.multiline, options.dotall)
-    elif options.split:
-        return split(options.split, file, options.maxsplit, options.count, options.ignorecase, options.multiline, options.dotall)
+        for arg in args:
+            # Expand to glob (wildcards), user (~ or ~user) and vars ($VAR)
+            expanded = glob.glob(os.path.expanduser(os.path.expandvars(arg)))
+            # This also allows us to find out if a file does not exist /before/
+            # trying to open it.
+            if expanded == []:
+                qprint("File not found " + arg)
+                return 8
+            for ex in expanded:
+                try:
+                    files.append(open(ex, 'r'))
+                except IOError:
+                    qprint("Cannot open input file " + ex)
+                    return 8
     else:
-        # No function supplied
-        parser.print_help()
+        # If no files, read from stdin
+        files = [sys.stdin]
     
-	return 0
+    rcode = 0
+    for file in files:
+        if options.match:
+            rcode += match(options.match, file, options.groups, options.ignorecase, options.multiline, options.dotall)
+        elif options.search:
+            rcode += search(options.search, file, options.groups, options.ignorecase, options.multiline, options.dotall)
+        elif options.matchall:
+            rcode += matchall(options.matchall, file, options.count, options.groups, options.ignorecase, options.multiline, options.dotall)
+        elif options.split:
+            rcode += split(options.split, file, options.maxsplit, options.count, options.ignorecase, options.multiline, options.dotall)
+        else:
+            # No function supplied
+            parser.print_help()
+            return 0
+    
+    return rcode
 
 if __name__ == '__main__':
     # Exit with code returned by main() (like C)
