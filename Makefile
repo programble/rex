@@ -10,7 +10,7 @@ all:
 install:
 	mkdir -p $(INSTALL_DIR)
 	cp -v * $(INSTALL_DIR)
-    chmod +x $(INSTALL_DIR)/rex.py
+	chmod +x $(INSTALL_DIR)/rex.py
 	ln -s $(INSTALL_DIR)/rex.py $(BIN_DIR)/rex
 
 remove: uninstall
