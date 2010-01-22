@@ -2,6 +2,16 @@
 Rex is a regular expression (regex) swiss-army-knife. Rex provides multiple
 functions for working with regular expressions on files or standard input.
 
+## Installation ##
+To install Rex, run the following as root
+    make install
+This will allow you to run Rex by simply typing
+    rex
+
+### Removal ###
+To remove Rex, run the following as root
+    make uninstall
+
 ## Usage ##
     Usage: rex.py [options] <function> <expression> [files...]
 
