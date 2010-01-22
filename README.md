@@ -32,10 +32,10 @@ functions for working with regular expressions on files or standard input.
 Determine whether `example.file` starts with "foobar", then a letter from 'a' to
 'c'.
     rex -g1 -s "foobar([a-c])" example.file
-Search for "foobar", then a letter from 'a' to 'c' in example.file, and print
+Search for "foobar", then a letter from 'a' to 'c' in `example.file`, and print
 the found letter (group 1).
     rex -a "foo(.*)bar" example.file
-Find all text in example.file that starts with "foo" and ends with "bar". For
+Find all text in `example.file` that starts with "foo" and ends with "bar". For
 example, "foobazbar".
     rex -t "foo" example.file
-Split text in example.file at every occurance of "foo".
+Split text in `example.file` at every occurance of "foo".
