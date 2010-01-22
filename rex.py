@@ -194,7 +194,7 @@ def main():
     parser.add_option("--group", "-g", dest="groups", action="append", default=[], type="int", metavar="GROUP", help="Print a group")
     parser.add_option("--ignorecase", "-i", dest="ignorecase", action="store_true", default=False, help="Ignore case when matching")
     parser.add_option("--multiline", "-l", dest="multiline", action="store_true", default=False, help="Treat input as multiline")
-    parser.add_option("--dotall", dest="dotall", action="store_true", default=False, help="Make . match all, including newlines")
+    parser.add_option("--dotall", "-n", dest="dotall", action="store_true", default=False, help="Make `.` match all, including newlines")
     (options, args) = parser.parse_args()
     
     if options.version:
