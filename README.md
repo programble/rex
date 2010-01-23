@@ -4,6 +4,9 @@ functions for working with regular expressions on files or standard input. It
 is similar to the `grep` tool, but provides more functionality and uses regex
 instead of basic patterns.
 
+A good regular expression reference can be found at 
+http://www.regular-expressions.info/reference.html
+
 ## Installation ##
 To install Rex, run the following as root
     make install
