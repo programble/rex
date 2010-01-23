@@ -1,5 +1,7 @@
 # Rex installation Makefile
 
+REX_VERSION=0.1.1
+
 PREFIX=/usr
 INSTALL_DIR=$(PREFIX)/share/rex
 BIN_DIR=$(PREFIX)/bin
@@ -25,3 +27,20 @@ remove: uninstall
 uninstall:
 	rm -vf $(BIN_DIR)/rex
 	rm -vrf $(INSTALL_DIR)
+
+clean:
+	rm -vf *~
+	rm -vf *.pyc
+	rm -vf rex-*.tar.gz
+
+tarball:
+	tar cvf rex-$(REX_VERSION).tar.gz *
+
+help:
+	@echo "Targets:"
+	@echo "    all"
+	@echo "    install"
+	@echo "    uninstall"
+	@echo "    tarball"
+	@echo "    clean"
+	@echo
