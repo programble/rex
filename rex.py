@@ -102,7 +102,7 @@ def search(expr, file, groups=[0], ignorecase=False, multiline=False, dotall=Fal
         return 4
     
     if not regexpr:
-        assert(false)
+        assert(False)
     
     m = regexpr.search(data)
     if not m:
@@ -132,7 +132,7 @@ def matchall(expr, file, count=False, groups=[0], ignorecase=False, multiline=Fa
         return 4
     
     if not regexpr:
-        assert(false)
+        assert(False)
     
     miter = regexpr.finditer(data)
     # Count matches (to determine if there were any)
@@ -169,7 +169,7 @@ def split(expr, file, maxsplit=0, count=False, ignorecase=False, multiline=False
         return 4
     
     if not regexpr:
-        assert(false)
+        assert(False)
     
     splits = regexpr.split(data, maxsplit)
     if count:
