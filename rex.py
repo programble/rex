@@ -28,13 +28,10 @@ import re
 import glob
 import os.path
 
-# I'm sorry, there was no other way.
-quiet = False
-
-def qprint(data):
-    """Print only if quiet is disabled"""
-    if not quiet:
-        print data
+class qprint:
+    quiet = False
+    def __init__(self, string):
+        if not self.quiet: print string
 
 def version_info():
     """Print version info"""
@@ -202,7 +199,7 @@ def main():
         version_info()
         return 0
     
-    quiet = options.quiet
+    qprint.quiet = options.quiet
     
     # Set default to print group 0 (whole match)
     if options.groups == []:
