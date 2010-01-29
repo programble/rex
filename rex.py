@@ -37,6 +37,7 @@ def qprint(data):
         print data
 
 def version_info():
+    """Print version info"""
     # GNU Coding guidelines suggests:
     # GNU hello 2.3
     # Copyright (C) 2007 Free Software Foundation, Inc.
@@ -247,4 +248,4 @@ def main():
 
 if __name__ == '__main__':
     # Exit with code returned by main() (like C)
-	sys.exit(main())
+    sys.exit(main())
