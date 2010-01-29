@@ -44,3 +44,5 @@ help:
 	@echo "    tarball"
 	@echo "    clean"
 	@echo
+
+.PHONY: all install uninstall remove clean tarball help info
