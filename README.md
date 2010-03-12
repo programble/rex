@@ -1,8 +1,7 @@
 # Rex #
 Rex is a regular expression (regex) swiss-army-knife. Rex provides multiple
 functions for working with regular expressions on files or standard input. It
-is similar to the `grep` tool, but provides more functionality and uses regex
-instead of basic patterns.
+is similar to the `grep` tool, but provides more functionality.
 
 A good regular expression reference can be found at 
 http://www.regular-expressions.info/reference.html
